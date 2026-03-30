@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OnRekord QA Case Study – Maheera Hamid</title>
+<meta name="description" content="QA case study by Maheera Hamid — 2+ years of blockchain & Web3 QA on OnRekord, a live music rights platform. 264 defects logged, 90.5% approval rate, 101 high-priority issues caught pre-release.">
+<meta property="og:title" content="OnRekord QA Case Study – Maheera Hamid">
+<meta property="og:description" content="Manual QA Engineer specialising in Blockchain & Web3. 264 defects logged across 2+ years on a live smart contract platform.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090f;
+    --surface: #111118;
+    --surface2: #17171f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #7c6dfa;
+    --accent2: #a78bfa;
+    --teal: #2dd4bf;
+    --amber: #fbbf24;
+    --coral: #f87171;
+    --text: #f0f0f8;
+    --muted: #8b8b9e;
+    --muted2: #5a5a6e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 32px 120px;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 48px;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -64px; left: -32px; right: -32px;
+    height: 340px;
+    background: radial-gradient(ellipse 60% 200px at 30% 0%, rgba(124,109,250,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 160px at 80% 40%, rgba(45,212,191,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+    border: 1px solid;
+  }
+  .badge-blockchain { background: rgba(124,109,250,.1); border-color: rgba(124,109,250,.3); color: var(--accent2); }
+  .badge-live { background: rgba(45,212,191,.08); border-color: rgba(45,212,191,.25); color: var(--teal); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent2); }
+
+  .tagline {
+    font-size: 17px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 24px;
+    font-size: 13px; color: var(--muted);
+  }
+  .meta-item { display: flex; align-items: center; gap: 7px; }
+  .meta-icon { font-size: 14px; opacity: .7; }
+
+  /* ── Stats grid ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 56px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    border-radius: 12px 12px 0 0;
+  }
+  .stat-card.purple::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .stat-card.teal::before   { background: linear-gradient(90deg, var(--teal), #34d399); }
+  .stat-card.amber::before  { background: linear-gradient(90deg, var(--amber), #f59e0b); }
+  .stat-card.coral::before  { background: linear-gradient(90deg, var(--coral), #fb923c); }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 800;
+    line-height: 1; margin-bottom: 6px;
+    letter-spacing: -.02em;
+  }
+  .stat-card.purple .stat-num { color: var(--accent2); }
+  .stat-card.teal   .stat-num { color: var(--teal); }
+  .stat-card.amber  .stat-num { color: var(--amber); }
+  .stat-card.coral  .stat-num { color: var(--coral); }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 400; line-height: 1.4; }
+
+  /* ── Section titles ── */
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--muted2); letter-spacing: .1em;
+    text-transform: uppercase;
+    min-width: 28px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--text); letter-spacing: -.01em;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── About block ── */
+  .about-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    line-height: 1.75;
+    color: #c0c0d0;
+    font-size: 15px;
+  }
+  .about-block p + p { margin-top: 14px; }
+  .about-block strong { color: var(--text); font-weight: 500; }
+
+  /* ── Role card ── */
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .role-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(124,109,250,.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .role-title { font-weight: 600; font-size: 16px; margin-bottom: 6px; color: var(--text); }
+  .role-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Testing areas ── */
+  .testing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .test-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color .2s;
+  }
+  .test-card:hover { border-color: var(--border2); }
+  .test-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .test-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .test-title { font-weight: 600; font-size: 14px; color: var(--text); }
+  .test-items { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .test-items li {
+    font-size: 13px; color: var(--muted);
+    padding-left: 14px; position: relative; line-height: 1.5;
+  }
+  .test-items li::before {
+    content: '–'; position: absolute; left: 0; color: var(--muted2);
+  }
+
+  /* ── Bug examples ── */
+  .bug-list { display: flex; flex-direction: column; gap: 8px; }
+  .bug-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .bug-priority {
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .05em; flex-shrink: 0; margin-top: 2px;
+  }
+  .high { background: rgba(248,113,113,.12); color: var(--coral); border: 1px solid rgba(248,113,113,.2); }
+  .medium { background: rgba(251,191,36,.1); color: var(--amber); border: 1px solid rgba(251,191,36,.2); }
+  .bug-text { font-size: 13.5px; color: #b0b0c0; line-height: 1.5; }
+  .bug-tag { display: inline-block; margin-left: 8px; font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(124,109,250,.1); color: var(--accent2); border: 1px solid rgba(124,109,250,.2); }
+
+  /* ── Tools ── */
+  .tools-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tool-pill {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; color: var(--muted);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tool-pill .t-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ── Impact quote ── */
+  .impact-block {
+    background: linear-gradient(135deg, rgba(124,109,250,.06) 0%, rgba(45,212,191,.04) 100%);
+    border: 1px solid rgba(124,109,250,.2);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .impact-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent2); margin-bottom: 14px; }
+  .impact-text { font-size: 17px; color: var(--text); line-height: 1.7; font-weight: 300; }
+  .impact-text strong { color: var(--accent2); font-weight: 500; }
+
+  /* ── Footer bar ── */
+  .footer-bar {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+  .footer-links { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 620px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .testing-grid { grid-template-columns: 1fr; }
+    .page { padding: 40px 20px 80px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="badge-row">
+      <span class="badge badge-blockchain">Blockchain · Web3 · Music Tech</span>
+      <span class="badge badge-live"><span class="dot"></span> Live Product</span>
+    </div>
+
+    <h1>QA Lead on <span>OnRekord</span> —<br>A Blockchain Music Rights Platform</h1>
+    <p class="tagline">2+ years of end-to-end manual QA on a SuperNFT marketplace handling smart contract interactions, royalty distributions, and USDC transactions for music creators worldwide.</p>
+
+    <div class="meta-row">
+      <div class="meta-item"><span class="meta-icon">📅</span> November 2023 – Present</div>
+      <div class="meta-item"><span class="meta-icon">🌐</span> onrekord.io</div>
+      <div class="meta-item"><span class="meta-icon">🔗</span> Blockchain · NFT Marketplace · SaaS</div>
+      <div class="meta-item"><span class="meta-icon">🏢</span> OnRekord, Remote</div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num">264</div>
+      <div class="stat-label">Bugs &amp; tasks logged (primary QA contributor)</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-num">90.5%</div>
+      <div class="stat-label">Bug approval rate — near-zero false positives</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-num">101</div>
+      <div class="stat-label">High-priority defects caught before release</div>
+    </div>
+    <div class="stat-card coral">
+      <div class="stat-num">2+ yrs</div>
+      <div class="stat-label">Continuous QA across product versions</div>
+    </div>
+  </div>
+
+  <!-- About the project -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>About the Project</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="about-block">
+      <p><strong>OnRekord is a blockchain-powered music rights and royalties platform</strong> that allows artists, producers, and contributors to bundle music assets (stems, tracks, videos) into <strong>SuperNFTs</strong> — a tamper-proof digital record of ownership and contribution on the blockchain.</p>
+      <p>The platform handles <strong>smart contract-driven royalty distributions</strong>, NFT minting and trading on a marketplace, USDC payment flows, KYC-linked identity verification, and real-time sync between on-chain events and the application UI. This is one of the most technically complex environments a QA engineer can work in — every bug can have financial consequences for real artists and rights holders.</p>
+      <p>I joined as the <strong>primary SQA engineer</strong> at the OnRekord App stage and have tested across every major product release through V1.1, covering the core app, the NFT marketplace, backend APIs, and smart contract integrations.</p>
+    </div>
+  </div>
+
+  <!-- My Role -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>My Role</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">🔬</div>
+      <div>
+        <div class="role-title">Web SQA Engineer — Lead QA Contributor</div>
+        <div class="role-desc">I was responsible for the full QA lifecycle across sprints: translating user stories into test cases, participating in Scrum planning, executing regression and exploratory testing, logging defects in Jira with reproducible evidence, validating blockchain interactions, and driving bug resolution with developers. Of the 427 total tasks tracked in V1.1, I personally logged 264 — making me the single largest QA contributor on the project.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What I tested -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Areas Tested</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="testing-grid">
+      <div class="test-card">
+        <div class="test-header">
+          <div class="test-dot" style="background:#7c6dfa"></div>
+          <div class="test-title">Blockchain &amp; Smart Contracts</div>
+        </div>
+        <ul class="test-items">
+          <li>NFT minting, buying, and selling flows</li>
+          <li>USDC royalty distribution across contributors</li>
+          <li>Smart contract output validation (testnet + mainnet)</li>
+          <li>On-chain to UI state synchronization</li>
+          <li>Wallet connection and MetaMask flows</li>
+          <li>Transaction progress and failure states</li>
+        </ul>
+      </div>
+      <div class="test-card">
+        <div class="test-header">
+          <div class="test-dot" style="background:#2dd4bf"></div>
+          <div class="test-title">REST API &amp; Backend</div>
+        </div>
+        <ul class="test-items">
+          <li>RESTful API validation via Postman &amp; Swagger</li>
+          <li>Positive, negative, and edge-case scenarios</li>
+          <li>Financial data API (royalties, sales tabs)</li>
+          <li>NFT metadata endpoint validation</li>
+          <li>Alchemy webhook integration testing</li>
+          <li>DB schema and collection contract events</li>
+        </ul>
+      </div>
+      <div class="test-card">
+        <div class="test-header">
+          <div class="test-dot" style="background:#fbbf24"></div>
+          <div class="test-title">Marketplace &amp; App Flows</div>
+        </div>
+        <ul class="test-items">
+          <li>NFT marketplace end-to-end user journeys</li>
+          <li>OTP and KYC verification flows</li>
+          <li>Withdraw, transfer, and royalty invite flows</li>
+          <li>Collection listing, preview, and access controls</li>
+          <li>Multi-account royalty distribution logic</li>
+          <li>Regression testing across product releases</li>
+        </ul>
+      </div>
+      <div class="test-card">
+        <div class="test-header">
+          <div class="test-dot" style="background:#f87171"></div>
+          <div class="test-title">UI &amp; Cross-Platform</div>
+        </div>
+        <ul class="test-items">
+          <li>Figma design-to-implementation validation</li>
+          <li>Cross-browser testing with DevTools</li>
+          <li>Responsive layout and alignment QA</li>
+          <li>Error message accuracy and UX copy review</li>
+          <li>Number formatting (international phone, decimals)</li>
+          <li>Notification and modal state testing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bug examples -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Sample Defects Found</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="bug-list">
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Transaction doesn't initiate when user clicks "Max" and proceeds to withdraw<span class="bug-tag">Blockchain</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Financial data doesn't update if user refreshes the page while a transaction is in progress<span class="bug-tag">API / State Sync</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Number of Rekords sold doesn't update for collection contributors after a sale<span class="bug-tag">Blockchain</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Collection assets preview shown to users who are not the owner, buyer, or seller — access control failure<span class="bug-tag">Authorization</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Phone number field displaying "Invalid number" for UAE, KSA &amp; Australian numbers — global validation bug<span class="bug-tag">Validation</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority high">High</span>
+        <span class="bug-text">Royalty financial data for collection Rekords not appearing on the "Sales" tab<span class="bug-tag">API / Data</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority medium">Med</span>
+        <span class="bug-text">Expired royalty invite status doesn't update to "Pending" until user manually refreshes the page<span class="bug-tag">UI State</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority medium">Med</span>
+        <span class="bug-text">3 duplicate notifications appear when renewing an expired royalty invite<span class="bug-tag">Notification Logic</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority medium">Med</span>
+        <span class="bug-text">OTP email and phone fields not clearing on resend — stale data persists in form<span class="bug-tag">Frontend</span></span>
+      </div>
+
+      <div class="bug-item">
+        <span class="bug-priority medium">Med</span>
+        <span class="bug-text">Sell modal reappears on dashboard after user clicks back button mid-flow<span class="bug-tag">UI / Flow</span></span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Tools -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Tools &amp; Environment</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="tools-wrap">
+      <div class="tool-pill"><span class="t-dot" style="background:#ef4444"></span> Jira</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#f97316"></span> Postman</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#84cc16"></span> Swagger</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#06b6d4"></span> MetaMask</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#8b5cf6"></span> Blockchain Explorer</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#ec4899"></span> Figma</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#14b8a6"></span> DevTools</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#f59e0b"></span> Agile / Scrum</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#6366f1"></span> Testnet &amp; Mainnet</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#10b981"></span> USDC / Smart Contracts</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#64748b"></span> Alchemy Webhooks</div>
+      <div class="tool-pill"><span class="t-dot" style="background:#f43f5e"></span> Chrome / Firefox / Safari</div>
+    </div>
+  </div>
+
+  <!-- Impact -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Impact</h2>
+      <div class="divider-line"></div>
+    </div>
+    <div class="impact-block">
+      <div class="impact-label">What my QA work protected</div>
+      <div class="impact-text">
+        OnRekord handles <strong>real financial transactions</strong> — royalty payments in USDC to artists, producers, and rights holders on the blockchain. A missed bug here isn't a UI glitch; it's a payment that doesn't reach a creator, or a transaction that silently fails.<br><br>
+        Over 2+ years and multiple product releases, I was the <strong>primary line of defense</strong> between development and production — logging 264 defects with a <strong>90.5% approval rate</strong>, catching 101 high-priority issues before they ever reached users, and ensuring that every royalty distribution, NFT transaction, and smart contract interaction worked exactly as the business intended.
+      </div>
+    </div>
+  </div>
+
+    <!-- Footer -->
+  <div class="footer-bar">
+    <div class="footer-name">Maheera Hamid — SQA Engineer</div>
+    <div class="footer-links">
+      <a href="mailto:maheerahamid20@gmail.com" style="color:inherit;text-decoration:none;">maheerahamid20@gmail.com</a>
+      <span style="color:#3a3a4e">·</span>
+      <a href="https://www.linkedin.com/in/maheera-hamid" target="_blank" style="color:inherit;text-decoration:none;">LinkedIn</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
